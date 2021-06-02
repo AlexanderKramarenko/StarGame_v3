@@ -18,14 +18,11 @@ public class BaseScreen implements Screen, InputProcessor {
     private Rect screenBounds;
     private Rect worldBounds;
     private Rect glBounds;
-    protected Vector2 mouseClickTarget;
+
     private Matrix4 worldToGl;
     private Matrix3 screenToWorld;
 
-    protected Vector2 velocityToTarget;
-    protected Vector2 currentPosition;
-    private static final float V_LEN = 2f;
-
+    private Vector2 mouseClickTarget;
 
     @Override
     public void show() {
@@ -33,13 +30,11 @@ public class BaseScreen implements Screen, InputProcessor {
         batch = new SpriteBatch();
         screenBounds = new Rect();
         worldBounds = new Rect();
-        glBounds = new Rect(0, 0, 1f, 1f);
+        glBounds = new Rect(0,0,1f,1f);
         worldToGl = new Matrix4();
         screenToWorld = new Matrix3();
         mouseClickTarget = new Vector2();
         Gdx.input.setInputProcessor(this);
-        velocityToTarget = new Vector2();
-        currentPosition = new Vector2();
     }
 
     @Override
@@ -52,6 +47,7 @@ public class BaseScreen implements Screen, InputProcessor {
         screenBounds.setSize(width, height);
         screenBounds.setLeft(0);
         screenBounds.setBottom(0);
+
         float aspect = width / (float) height;
         worldBounds.setHeight(1f);
         worldBounds.setWidth(1f * aspect);
@@ -66,7 +62,7 @@ public class BaseScreen implements Screen, InputProcessor {
     }
 
 
-    @Override
+        @Override
     public void pause() {
         System.out.println("pause");
     }
@@ -108,30 +104,25 @@ public class BaseScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        mouseClickTarget.set(screenX, screenBounds.getHalfWidth() - screenY).mul(screenToWorld);
+        mouseClickTarget.set(screenX, screenBounds.getHeight() - screenY).mul(screenToWorld);
         touchDown(mouseClickTarget, pointer, button);
         return false;
     }
 
-    public boolean touchDown(Vector2 mouseClickTarget, int pointer, int button) {
-        velocityToTarget.set(mouseClickTarget.cpy().sub(currentPosition)).setLength(V_LEN);
-        System.out.println("velocityToTarget = " + velocityToTarget);
-        //       System.out.println("touchDown mouseClickTargetX = " + mouseClickTarget.x + " mouseClickTargetY = " + mouseClickTarget.y);
-        System.out.println("mouseClickTarget = " + mouseClickTarget);
-        System.out.println("currentPosition = " + currentPosition);
-
+    public boolean touchDown(Vector2 mouseClickTarget , int pointer, int button) {
+        System.out.println("touchDown mouseClickTargetX = " + mouseClickTarget.x + " mouseClickTargetY = " + mouseClickTarget.y);
         return false;
     }
 
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        mouseClickTarget.set(screenX, screenBounds.getHalfWidth() - screenY).mul(screenToWorld);
+        mouseClickTarget.set(screenX, screenBounds.getHalfHeight() - screenY).mul(screenToWorld);
         touchUp(mouseClickTarget, pointer, button);
         return false;
     }
 
-    public boolean touchUp(Vector2 mouseClickTarget, int pointer, int button) {
+    public boolean touchUp(Vector2 mouseClickTarget , int pointer, int button) {
         System.out.println("touchUp mouseClickTargetX = " + mouseClickTarget.x + " mouseClickTargetY = " + mouseClickTarget.y);
         return false;
     }
@@ -139,12 +130,12 @@ public class BaseScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        mouseClickTarget.set(screenX, screenBounds.getHalfWidth() - screenY).mul(screenToWorld);
+        mouseClickTarget.set(screenX, screenBounds.getHalfHeight() - screenY).mul(screenToWorld);
         touchDragged(mouseClickTarget, pointer);
         return false;
     }
 
-    public boolean touchDragged(Vector2 mouseClickTarget, int pointer) {
+    public boolean touchDragged(Vector2 mouseClickTarget , int pointer) {
         System.out.println("touchDragged mouseClickTargetX = " + mouseClickTarget.x + " mouseClickTargetY = " + mouseClickTarget.y);
         return false;
     }
@@ -159,9 +150,5 @@ public class BaseScreen implements Screen, InputProcessor {
     public boolean scrolled(float amountX, float amountY) {
         System.out.println("scrolled amountX = " + amountX + " amountY = " + amountY);
         return false;
-    }
-
-    public Vector2 getMouseClickTarget() {
-        return mouseClickTarget;
     }
 }
