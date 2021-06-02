@@ -8,7 +8,7 @@ import ru.alexander_kramarenko.math.Rect;
 
 public class Background extends Sprite {
 
-    public Background(Texture texture) {
+    public Background(Texture texture){
         super(new TextureRegion(texture));
     }
 
