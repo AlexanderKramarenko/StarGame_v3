@@ -2,12 +2,14 @@ package ru.alexander_kramarenko.screen;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import ru.alexander_kramarenko.base.BaseScreen;
 import ru.alexander_kramarenko.math.Rect;
 import ru.alexander_kramarenko.sprite.Background;
 import ru.alexander_kramarenko.sprite.Star;
+import ru.alexander_kramarenko.sprite.StarCruiser;
 
 public class GameScreen extends BaseScreen {
 
@@ -19,6 +21,8 @@ public class GameScreen extends BaseScreen {
     private Background background;
     private Star[] stars;
 
+    private StarCruiser starCruiser;
+
     @Override
     public void show() {
         super.show();
@@ -29,6 +33,7 @@ public class GameScreen extends BaseScreen {
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(atlas);
         }
+        starCruiser = new StarCruiser(atlas);
     }
 
     @Override
@@ -44,6 +49,7 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.resize(worldBounds);
         }
+        starCruiser.resize(worldBounds);
     }
 
     @Override
@@ -57,6 +63,7 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.update(delta);
         }
+        starCruiser.update(delta);
     }
 
     private void draw() {
@@ -66,6 +73,19 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.draw(batch);
         }
+        starCruiser.draw(batch);
         batch.end();
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        starCruiser.keyDown(keycode);
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        starCruiser.keyUp(keycode);
+        return false;
     }
 }
