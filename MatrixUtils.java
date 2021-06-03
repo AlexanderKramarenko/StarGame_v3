@@ -1,7 +1,5 @@
 package ru.alexander_kramarenko.math;
 
-
-
 // Утилита для работы с матрицами
 
 import com.badlogic.gdx.math.Matrix3;
@@ -9,11 +7,12 @@ import com.badlogic.gdx.math.Matrix4;
 
 public class MatrixUtils {
 
-    private MatrixUtils(){
+    private MatrixUtils() {
     }
 
     /**
      * Расчёт матрицы перехода 4x4
+     *
      * @param mat итоговая матрица преобразований
      * @param src исходный квадрат
      * @param dst итоговый квадрат
@@ -26,6 +25,7 @@ public class MatrixUtils {
 
     /**
      * Расчёт матрицы перехода 3x3
+     *
      * @param mat итоговая матрица преобразований
      * @param src исходный квадрат
      * @param dst итоговый квадрат
@@ -35,7 +35,4 @@ public class MatrixUtils {
         float scaleY = dst.getHeight() / src.getHeight();
         mat.idt().translate(dst.centerPosition.x, dst.centerPosition.y).scale(scaleX, scaleY).translate(-src.centerPosition.x, -src.centerPosition.y);
     }
-
-
-
 }
