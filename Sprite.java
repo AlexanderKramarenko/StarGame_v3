@@ -13,43 +13,39 @@ public class Sprite extends Rect {
     protected TextureRegion[] regions;
     protected int frame;
 
-    public Sprite(TextureRegion region){
+    public Sprite(TextureRegion region) {
         regions = new TextureRegion[1];
         regions[0] = region;
     }
 
-    public void setHeightProportion(float height){
+    public void setHeightProportion(float height) {
         setHeight(height);
         float aspect = regions[frame].getRegionWidth() / (float) regions[frame].getRegionHeight();
         setWidth(height * aspect);
     }
 
-    public void update(float delta){
-
-
+    public void update(float delta) {
     }
 
-    public void draw(SpriteBatch batch){
+    public void draw(SpriteBatch batch) {
         batch.draw(
-          regions[frame],
-          getLeft(), getBottom(),
-          halfWidth, halfHeight,
-          getWidth(), getHeight(),
-          scale, scale,
-          angle
+                regions[frame],
+                getLeft(), getBottom(),
+                halfWidth, halfHeight,
+                getWidth(), getHeight(),
+                scale, scale,
+                angle
         );
     }
 
-    public void resize(Rect worldBounds){
-
-
+    public void resize(Rect worldBounds) {
     }
 
-    public boolean touchDown(Vector2 mouseClickTarget , int pointer, int button) {
+    public boolean touchDown(Vector2 touchPoint, int pointer, int button) {
         return false;
     }
 
-    public boolean touchUp(Vector2 mouseClickTarget , int pointer, int button) {
+    public boolean touchUp(Vector2 touchPoint, int pointer, int button) {
         return false;
     }
 

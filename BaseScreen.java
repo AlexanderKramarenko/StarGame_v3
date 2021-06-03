@@ -22,7 +22,7 @@ public class BaseScreen implements Screen, InputProcessor {
     private Matrix4 worldToGl;
     private Matrix3 screenToWorld;
 
-    private Vector2 mouseClickTarget;
+    private Vector2 touchPoint;
 
     @Override
     public void show() {
@@ -30,10 +30,10 @@ public class BaseScreen implements Screen, InputProcessor {
         batch = new SpriteBatch();
         screenBounds = new Rect();
         worldBounds = new Rect();
-        glBounds = new Rect(0,0,1f,1f);
+        glBounds = new Rect(0, 0, 1f, 1f);
         worldToGl = new Matrix4();
         screenToWorld = new Matrix3();
-        mouseClickTarget = new Vector2();
+        touchPoint = new Vector2();
         Gdx.input.setInputProcessor(this);
     }
 
@@ -61,8 +61,7 @@ public class BaseScreen implements Screen, InputProcessor {
         System.out.println("resize worldBounds width = " + worldBounds.getWidth() + " worldBounds height = " + worldBounds.getHeight());
     }
 
-
-        @Override
+    @Override
     public void pause() {
         System.out.println("pause");
     }
@@ -104,42 +103,40 @@ public class BaseScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        mouseClickTarget.set(screenX, screenBounds.getHeight() - screenY).mul(screenToWorld);
-        touchDown(mouseClickTarget, pointer, button);
+        touchPoint.set(screenX, screenBounds.getHeight() - screenY).mul(screenToWorld);
+        touchDown(touchPoint, pointer, button);
         return false;
     }
 
-    public boolean touchDown(Vector2 mouseClickTarget , int pointer, int button) {
-        System.out.println("touchDown mouseClickTargetX = " + mouseClickTarget.x + " mouseClickTargetY = " + mouseClickTarget.y);
+    public boolean touchDown(Vector2 touchPoint, int pointer, int button) {
+        System.out.println("touchDown touchPointX = " + touchPoint.x + " touchPointY = " + touchPoint.y);
         return false;
     }
-
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        mouseClickTarget.set(screenX, screenBounds.getHalfHeight() - screenY).mul(screenToWorld);
-        touchUp(mouseClickTarget, pointer, button);
+        touchPoint.set(screenX, screenBounds.getHeight() - screenY).mul(screenToWorld);
+        touchUp(touchPoint, pointer, button);
         return false;
     }
 
-    public boolean touchUp(Vector2 mouseClickTarget , int pointer, int button) {
-        System.out.println("touchUp mouseClickTargetX = " + mouseClickTarget.x + " mouseClickTargetY = " + mouseClickTarget.y);
+    public boolean touchUp(Vector2 touchPoint, int pointer, int button) {
+        System.out.println("touchUp touchPointX = " + touchPoint.x + " touchPointY = " + touchPoint.y);
         return false;
     }
-
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        mouseClickTarget.set(screenX, screenBounds.getHalfHeight() - screenY).mul(screenToWorld);
-        touchDragged(mouseClickTarget, pointer);
+        System.out.println("touchDragged screenX = " + screenX + " screenY = " + screenY);
+        touchPoint.set(screenX, screenBounds.getHeight() - screenY).mul(screenToWorld);
+        touchDragged(touchPoint, pointer);
         return false;
     }
 
-    public boolean touchDragged(Vector2 mouseClickTarget , int pointer) {
-        System.out.println("touchDragged mouseClickTargetX = " + mouseClickTarget.x + " mouseClickTargetY = " + mouseClickTarget.y);
+    public boolean touchDragged(Vector2 touchPoint, int pointer) {
+        System.out.println("touchDragged touchPointX = " + touchPoint.x + " touchPointY = " + touchPoint.y);
         return false;
     }
-
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
