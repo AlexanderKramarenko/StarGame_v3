@@ -3,10 +3,12 @@ package ru.alexander_kramarenko.screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import ru.alexander_kramarenko.base.BaseScreen;
 import ru.alexander_kramarenko.math.Rect;
+import ru.alexander_kramarenko.pool.BulletPool;
 import ru.alexander_kramarenko.sprite.Background;
 import ru.alexander_kramarenko.sprite.Star;
 import ru.alexander_kramarenko.sprite.StarCruiser;
@@ -21,7 +23,10 @@ public class GameScreen extends BaseScreen {
     private Background background;
     private Star[] stars;
 
+    private BulletPool bulletPool;
     private StarCruiser starCruiser;
+
+
 
     @Override
     public void show() {
@@ -33,12 +38,14 @@ public class GameScreen extends BaseScreen {
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(atlas);
         }
-        starCruiser = new StarCruiser(atlas);
+        bulletPool = new BulletPool();
+        starCruiser = new StarCruiser(atlas, bulletPool);
     }
 
     @Override
     public void render(float delta) {
         update(delta);
+        freeAllDestroyed();
         draw();
     }
 
@@ -57,6 +64,7 @@ public class GameScreen extends BaseScreen {
         super.dispose();
         bg.dispose();
         atlas.dispose();
+        bulletPool.dispose();
     }
 
     private void update(float delta) {
@@ -64,6 +72,12 @@ public class GameScreen extends BaseScreen {
             star.update(delta);
         }
         starCruiser.update(delta);
+        bulletPool.updateActiveSprites(delta);
+    }
+
+    private void freeAllDestroyed(){
+        bulletPool.freeAllDestroyed();
+
     }
 
     private void draw() {
@@ -74,6 +88,7 @@ public class GameScreen extends BaseScreen {
             star.draw(batch);
         }
         starCruiser.draw(batch);
+        bulletPool.drawActiveSprites(batch);
         batch.end();
     }
 
@@ -86,6 +101,18 @@ public class GameScreen extends BaseScreen {
     @Override
     public boolean keyUp(int keycode) {
         starCruiser.keyUp(keycode);
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(Vector2 touchPoint, int pointer, int button) {
+        starCruiser.touchDown(touchPoint, pointer, button);
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(Vector2 touchPoint, int pointer, int button) {
+        starCruiser.touchUp(touchPoint, pointer, button);
         return false;
     }
 }
