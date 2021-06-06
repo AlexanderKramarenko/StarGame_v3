@@ -1,8 +1,11 @@
 package ru.alexander_kramarenko.base;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 import ru.alexander_kramarenko.math.Rect;
 
@@ -11,11 +14,18 @@ public class Sprite extends Rect {
     protected float angle;
     protected float scale = 1;
     protected TextureRegion[] regions;
+    protected TextureRegion[][] regions1;
+
     protected int frame;
 
     public Sprite(TextureRegion region) {
         regions = new TextureRegion[1];
         regions[0] = region;
+    }
+
+    public Sprite(TextureRegion[][] region) {
+        regions = new TextureRegion[1];
+        regions[0] = region[0][0];
     }
 
     public void setHeightProportion(float height) {
