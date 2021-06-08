@@ -1,8 +1,9 @@
 package ru.alexander_kramarenko.screen;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -10,6 +11,7 @@ import ru.alexander_kramarenko.base.BaseScreen;
 import ru.alexander_kramarenko.math.Rect;
 import ru.alexander_kramarenko.pool.BulletPool;
 import ru.alexander_kramarenko.sprite.Background;
+import ru.alexander_kramarenko.sprite.EnemyShip;
 import ru.alexander_kramarenko.sprite.Star;
 import ru.alexander_kramarenko.sprite.StarCruiser;
 
@@ -26,7 +28,11 @@ public class GameScreen extends BaseScreen {
     private BulletPool bulletPool;
     private StarCruiser starCruiser;
 
+    private Music backgroundMusic;
 
+    private Music shootingSound;
+
+    private EnemyShip enemyShip;
 
     @Override
     public void show() {
@@ -39,7 +45,16 @@ public class GameScreen extends BaseScreen {
             stars[i] = new Star(atlas);
         }
         bulletPool = new BulletPool();
-        starCruiser = new StarCruiser(atlas, bulletPool);
+
+        shootingSound = Gdx.audio.newMusic(Gdx.files.internal("sounds/laser.wav"));
+
+        starCruiser = new StarCruiser(atlas, bulletPool, shootingSound);
+
+        enemyShip = new EnemyShip(atlas, bulletPool, shootingSound);
+
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
     }
 
     @Override
@@ -57,6 +72,7 @@ public class GameScreen extends BaseScreen {
             star.resize(worldBounds);
         }
         starCruiser.resize(worldBounds);
+        enemyShip.resize((worldBounds));
     }
 
     @Override
@@ -65,6 +81,7 @@ public class GameScreen extends BaseScreen {
         bg.dispose();
         atlas.dispose();
         bulletPool.dispose();
+        backgroundMusic.dispose();
     }
 
     private void update(float delta) {
@@ -73,6 +90,7 @@ public class GameScreen extends BaseScreen {
         }
         starCruiser.update(delta);
         bulletPool.updateActiveSprites(delta);
+        enemyShip.update(delta);
     }
 
     private void freeAllDestroyed(){
@@ -89,6 +107,7 @@ public class GameScreen extends BaseScreen {
         }
         starCruiser.draw(batch);
         bulletPool.drawActiveSprites(batch);
+        enemyShip.draw(batch);
         batch.end();
     }
 

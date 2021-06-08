@@ -1,6 +1,8 @@
 package ru.alexander_kramarenko.sprite;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -37,9 +39,19 @@ public class StarCruiser extends Sprite {
 
     private Vector2 bulletPosition;
 
+    private Music shootingSound;
+
     TextureRegion[][] starCruiserParts;
 
-    public StarCruiser(TextureAtlas atlas, BulletPool bulletPool) {
+    private float timeSeconds = 0f;
+    private float shootingPeriod = 0.5f;
+    private boolean autoShooting;
+
+    private boolean backgroundMusicOff;
+
+    private boolean shootingSoundOff;
+
+    public StarCruiser(TextureAtlas atlas, BulletPool bulletPool, Music shootingSound) {
 
         super(atlas.findRegion("main_ship"), 1, 2, 2);
         this.bulletPool = bulletPool;
@@ -51,6 +63,13 @@ public class StarCruiser extends Sprite {
         rightShiftVector = new Vector2(0.2f, 0);
         leftShiftVector = new Vector2(-0.2f, 0);
 
+        this.shootingSound = shootingSound;
+
+        autoShooting = false;
+
+        backgroundMusicOff = false;
+
+        shootingSoundOff = false;
 
     }
 
@@ -67,30 +86,37 @@ public class StarCruiser extends Sprite {
     public void update(float delta) {
 
         centerPosition.mulAdd(actualShiftVector, delta);
+        if (autoShooting) {
+            timeSeconds += Gdx.graphics.getDeltaTime();
+            if (timeSeconds > shootingPeriod) {
+                timeSeconds -= shootingPeriod;
+                shoot();
+            }
+        }
 
 // Корабль ограничен стенками - начало -
 
-//        if (getRight() > worldBounds.getRight()){
-//            setRight(worldBounds.getRight());
-//            freeze();
-//        }
-//
-//        if (getLeft() < worldBounds.getLeft()){
-//            setLeft(worldBounds.getLeft());
-//            freeze();
-//        }
+        if (getRight() > worldBounds.getRight()){
+            setRight(worldBounds.getRight());
+            freeze();
+        }
+
+        if (getLeft() < worldBounds.getLeft()){
+            setLeft(worldBounds.getLeft());
+            freeze();
+        }
 
 // Корабль ограничен стенками - конец -
 
 // Корабль бегает по кругу - начало -
 
-        if (getLeft() > worldBounds.getRight()){
-            setRight(worldBounds.getLeft());
-        }
-
-        if (getRight() < worldBounds.getLeft()){
-            setLeft(worldBounds.getRight());
-        }
+//        if (getLeft() > worldBounds.getRight()){
+//            setRight(worldBounds.getLeft());
+//        }
+//
+//        if (getRight() < worldBounds.getLeft()){
+//            setLeft(worldBounds.getRight());
+//        }
 // Корабль бегает по кругу - конец -
 
     }
@@ -122,6 +148,12 @@ public class StarCruiser extends Sprite {
                 break;
             case Input.Keys.UP:
                shoot();
+                break;
+            case Input.Keys.F:
+                 if (!autoShooting)
+                     autoShooting = true;
+                  else
+                      autoShooting = false;
                 break;
         }
         return false;
@@ -201,5 +233,7 @@ public class StarCruiser extends Sprite {
         Bullet bullet = bulletPool.obtain();
         bulletPosition.set(centerPosition.x, centerPosition.y + getHalfHeight());
         bullet.setBullet(this, bulletRegion, bulletPosition, bulletV, worldBounds, 1, 0.01f );
+        shootingSound.play();
+
     }
 }
