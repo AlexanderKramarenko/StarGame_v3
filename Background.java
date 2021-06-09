@@ -16,6 +16,6 @@ public class Background extends Sprite {
     public void resize(Rect worldBounds) {
         super.resize(worldBounds);
         setHeightProportion(1f);
-        this.centerPosition.set(worldBounds.centerPosition);
+        this.pos.set(worldBounds.pos);
     }
 }

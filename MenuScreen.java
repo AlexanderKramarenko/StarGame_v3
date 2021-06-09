@@ -71,26 +71,26 @@ public class MenuScreen extends BaseScreen {
     }
 
     @Override
-    public boolean touchDown(Vector2 touchPoint, int pointer, int button) {
-        exitButton.touchDown(touchPoint, pointer, button);
-        playButton.touchDown(touchPoint, pointer, button);
+    public boolean touchDown(Vector2 touch, int pointer, int button) {
+        exitButton.touchDown(touch, pointer, button);
+        playButton.touchDown(touch, pointer, button);
         return false;
     }
 
     @Override
-    public boolean touchUp(Vector2 touchPoint, int pointer, int button) {
-        exitButton.touchUp(touchPoint, pointer, button);
-        playButton.touchUp(touchPoint, pointer, button);
+    public boolean touchUp(Vector2 touch, int pointer, int button) {
+        exitButton.touchUp(touch, pointer, button);
+        playButton.touchUp(touch, pointer, button);
         return false;
     }
 
-    public void update(float delta) {
+    private void update(float delta) {
         for (Star star : stars) {
             star.update(delta);
         }
     }
 
-    public void draw() {
+    private void draw() {
         ScreenUtils.clear(0.33f, 0.45f, 0.68f, 1);
         batch.begin();
         background.draw(batch);

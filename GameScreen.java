@@ -2,6 +2,7 @@ package ru.alexander_kramarenko.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -10,10 +11,11 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import ru.alexander_kramarenko.base.BaseScreen;
 import ru.alexander_kramarenko.math.Rect;
 import ru.alexander_kramarenko.pool.BulletPool;
+import ru.alexander_kramarenko.pool.EnemyPool;
 import ru.alexander_kramarenko.sprite.Background;
-import ru.alexander_kramarenko.sprite.EnemyShip;
+import ru.alexander_kramarenko.sprite.MainShip;
 import ru.alexander_kramarenko.sprite.Star;
-import ru.alexander_kramarenko.sprite.StarCruiser;
+import ru.alexander_kramarenko.utils.EnemyEmitter;
 
 public class GameScreen extends BaseScreen {
 
@@ -26,13 +28,14 @@ public class GameScreen extends BaseScreen {
     private Star[] stars;
 
     private BulletPool bulletPool;
-    private StarCruiser starCruiser;
+    private EnemyPool enemyPool;
+    private MainShip mainShip;
 
-    private Music backgroundMusic;
+    private Sound laserSound;
+    private Sound bulletSound;
+    private Music music;
 
-    private Music shootingSound;
-
-    private EnemyShip enemyShip;
+    private EnemyEmitter enemyEmitter;
 
     @Override
     public void show() {
@@ -45,16 +48,14 @@ public class GameScreen extends BaseScreen {
             stars[i] = new Star(atlas);
         }
         bulletPool = new BulletPool();
-
-        shootingSound = Gdx.audio.newMusic(Gdx.files.internal("sounds/laser.wav"));
-
-        starCruiser = new StarCruiser(atlas, bulletPool, shootingSound);
-
-        enemyShip = new EnemyShip(atlas, bulletPool, shootingSound);
-
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
-        backgroundMusic.setLooping(true);
-        backgroundMusic.play();
+        bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
+        enemyPool = new EnemyPool(worldBounds, bulletPool, bulletSound);
+        laserSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
+        mainShip = new MainShip(atlas, bulletPool, laserSound);
+        enemyEmitter = new EnemyEmitter(worldBounds, enemyPool, atlas);
+        music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
+        music.setLooping(true);
+        music.play();
     }
 
     @Override
@@ -71,8 +72,7 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.resize(worldBounds);
         }
-        starCruiser.resize(worldBounds);
-        enemyShip.resize((worldBounds));
+        mainShip.resize(worldBounds);
     }
 
     @Override
@@ -81,21 +81,49 @@ public class GameScreen extends BaseScreen {
         bg.dispose();
         atlas.dispose();
         bulletPool.dispose();
-        backgroundMusic.dispose();
+        enemyPool.dispose();
+        bulletSound.dispose();
+        laserSound.dispose();
+        music.dispose();
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        mainShip.keyDown(keycode);
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        mainShip.keyUp(keycode);
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(Vector2 touch, int pointer, int button) {
+        mainShip.touchDown(touch, pointer, button);
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(Vector2 touch, int pointer, int button) {
+        mainShip.touchUp(touch, pointer, button);
+        return false;
     }
 
     private void update(float delta) {
         for (Star star : stars) {
             star.update(delta);
         }
-        starCruiser.update(delta);
+        mainShip.update(delta);
         bulletPool.updateActiveSprites(delta);
-        enemyShip.update(delta);
+        enemyPool.updateActiveSprites(delta);
+        enemyEmitter.generate(delta);
     }
 
-    private void freeAllDestroyed(){
+    private void freeAllDestroyed() {
         bulletPool.freeAllDestroyed();
-
+        enemyPool.freeAllDestroyed();
     }
 
     private void draw() {
@@ -105,33 +133,9 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.draw(batch);
         }
-        starCruiser.draw(batch);
+        mainShip.draw(batch);
         bulletPool.drawActiveSprites(batch);
-        enemyShip.draw(batch);
+        enemyPool.drawActiveSprites(batch);
         batch.end();
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        starCruiser.keyDown(keycode);
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        starCruiser.keyUp(keycode);
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(Vector2 touchPoint, int pointer, int button) {
-        starCruiser.touchDown(touchPoint, pointer, button);
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(Vector2 touchPoint, int pointer, int button) {
-        starCruiser.touchUp(touchPoint, pointer, button);
-        return false;
     }
 }
