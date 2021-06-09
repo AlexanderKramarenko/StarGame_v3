@@ -15,8 +15,8 @@ public abstract class ScaledButton extends Sprite {
     }
 
     @Override
-    public boolean touchDown(Vector2 touchPoint, int pointer, int button) {
-        if (pressed || !isMe(touchPoint)) {
+    public boolean touchDown(Vector2 touch, int pointer, int button) {
+        if (pressed || !isMe(touch)) {
             return false;
         }
         this.pointer = pointer;
@@ -26,12 +26,11 @@ public abstract class ScaledButton extends Sprite {
     }
 
     @Override
-    public boolean touchUp(Vector2 touchPoint, int pointer, int button) {
-
+    public boolean touchUp(Vector2 touch, int pointer, int button) {
         if (this.pointer != pointer || !pressed) {
             return false;
         }
-        if (isMe(touchPoint)) {
+        if (isMe(touch)) {
             action();
         }
         pressed = false;

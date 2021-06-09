@@ -1,52 +1,59 @@
 package ru.alexander_kramarenko.sprite;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-import ru.alexander_kramarenko.base.Sprite;
+import ru.alexander_kramarenko.base.Ship;
 import ru.alexander_kramarenko.math.Rect;
 import ru.alexander_kramarenko.pool.BulletPool;
 
-public class EnemyShip extends Sprite {
+public class EnemyShip extends Ship {
 
-    private static final float PADDING = 0.1f;
-
-    private static final float HEIGHT = 0.15f;
-
-
-    private Rect worldBounds;
-
-    private Music shootingSound;
-
-    private Vector2 topToBottomShiftVector;
-
-   // TextureRegion[][] enemyShipParts;
-
-    public EnemyShip(TextureAtlas atlas, BulletPool bulletPool, Music shootingSound) {
-
-        super(atlas.findRegion("enemy0"), 1, 2, 2);
-
-        topToBottomShiftVector = new Vector2(0, -0.2f);
-
-        this.shootingSound = shootingSound;
-    }
-
-    @Override
-    public void resize(Rect worldBounds) {
+    public EnemyShip(Rect worldBounds, BulletPool bulletPool, Sound bulletSound) {
         this.worldBounds = worldBounds;
-        setHeightProportion(HEIGHT);
-        setTop(worldBounds.getTop() - PADDING);
+        this.bulletPool = bulletPool;
+        this.bulletSound = bulletSound;
+        v0 = new Vector2();
+        v = new Vector2();
+        this.bulletV = new Vector2();
+        this.bulletPos = new Vector2();
     }
 
     @Override
     public void update(float delta) {
-        centerPosition.mulAdd(topToBottomShiftVector, delta);
-        if (getTop() < worldBounds.getBottom()){
-            setBottom(worldBounds.getTop());
+        super.update(delta);
+        bulletPos.set(pos.x, pos.y - getHalfHeight());
+        if (getTop() < worldBounds.getTop()) {
+            v.set(v0);
+        } else {
+            reloadTimer = reloadInterval * 0.8f;
         }
+        if (worldBounds.isOutside(this)) {
+            destroy();
+        }
+    }
+
+    public void set(
+            TextureRegion[] regions,
+            Vector2 v0,
+            TextureRegion bulletRegion,
+            float bulletHeight,
+            float bulletVY,
+            int damage,
+            float reloadInterval,
+            float height,
+            int hp
+    ) {
+        this.regions = regions;
+        this.v0.set(v0);
+        this.bulletRegion = bulletRegion;
+        this.bulletHeight = bulletHeight;
+        this.bulletV.set(0, bulletVY);
+        this.damage = damage;
+        this.reloadInterval= reloadInterval;
+        setHeightProportion(height);
+        this.hp = hp;
+        v.set(0, -0.3f);
     }
 }

@@ -28,6 +28,4 @@ public class Regions {
         }
         return regions;
     }
-
-
 }

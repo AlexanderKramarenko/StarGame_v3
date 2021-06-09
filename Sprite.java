@@ -15,13 +15,10 @@ public class Sprite extends Rect {
     protected float angle;
     protected float scale = 1;
     protected TextureRegion[] regions;
-    protected TextureRegion[][] regions1;
-
     protected int frame;
     protected boolean destroyed;
 
-    public Sprite(){
-
+    public Sprite() {
     }
 
     public Sprite(TextureRegion region) {
@@ -33,13 +30,22 @@ public class Sprite extends Rect {
         regions = Regions.split(region, rows, cols, frames);
     }
 
+    /**
+     * Установка размера изображения по высоте
+     * @param height высота
+     */
     public void setHeightProportion(float height) {
         setHeight(height);
         float aspect = regions[frame].getRegionWidth() / (float) regions[frame].getRegionHeight();
         setWidth(height * aspect);
     }
 
+    /**
+     * Логика спрайта
+     * @param delta отрезок времени
+     */
     public void update(float delta) {
+
     }
 
     public void draw(SpriteBatch batch) {
@@ -54,13 +60,14 @@ public class Sprite extends Rect {
     }
 
     public void resize(Rect worldBounds) {
+
     }
 
-    public boolean touchDown(Vector2 touchPoint, int pointer, int button) {
+    public boolean touchDown(Vector2 touch, int pointer, int button) {
         return false;
     }
 
-    public boolean touchUp(Vector2 touchPoint, int pointer, int button) {
+    public boolean touchUp(Vector2 touch, int pointer, int button) {
         return false;
     }
 
@@ -84,11 +91,11 @@ public class Sprite extends Rect {
         return destroyed;
     }
 
-    public void destroy(){
+    public void destroy() {
         destroyed = true;
     }
 
-    public void flushDestroy(){
+    public void flushDestroy() {
         destroyed = false;
     }
 }

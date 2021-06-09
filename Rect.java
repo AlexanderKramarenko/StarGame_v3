@@ -4,10 +4,12 @@ import com.badlogic.gdx.math.Vector2;
 
 // Прямоугольник
 
+/**
+ * Прямоугольник
+ */
 public class Rect {
 
-    //    public final Vector2 pos = new Vector2(); // позиция по центру
-    public final Vector2 centerPosition = new Vector2(); // позиция по центру
+    public final Vector2 pos = new Vector2(); // позиция по центру
     protected float halfWidth; // половина ширины
     protected float halfHeight; // половина высоты
 
@@ -16,29 +18,29 @@ public class Rect {
     }
 
     public Rect(Rect from) {
-        this(from.centerPosition.x, from.centerPosition.y, from.getHalfWidth(), from.getHalfHeight());
+        this(from.pos.x, from.pos.y, from.getHalfWidth(), from.getHalfHeight());
     }
 
     public Rect(float x, float y, float halfWidth, float halfHeight) {
-        centerPosition.set(x, y);
+        pos.set(x, y);
         this.halfWidth = halfWidth;
         this.halfHeight = halfHeight;
     }
 
     public float getLeft() {
-        return centerPosition.x - halfWidth;
+        return pos.x - halfWidth;
     }
 
     public float getTop() {
-        return centerPosition.y + halfHeight;
+        return pos.y + halfHeight;
     }
 
     public float getRight() {
-        return centerPosition.x + halfWidth;
+        return pos.x + halfWidth;
     }
 
     public float getBottom() {
-        return centerPosition.y - halfHeight;
+        return pos.y - halfHeight;
     }
 
     public float getHalfWidth() {
@@ -58,25 +60,25 @@ public class Rect {
     }
 
     public void set(Rect from) {
-        centerPosition.set(from.centerPosition);
+        pos.set(from.pos);
         halfWidth = from.halfWidth;
         halfHeight = from.halfHeight;
     }
 
     public void setLeft(float left) {
-        centerPosition.x = left + halfWidth;
+        pos.x = left + halfWidth;
     }
 
     public void setTop(float top) {
-        centerPosition.y = top - halfHeight;
+        pos.y = top - halfHeight;
     }
 
     public void setRight(float right) {
-        centerPosition.x = right - halfWidth;
+        pos.x = right - halfWidth;
     }
 
     public void setBottom(float bottom) {
-        centerPosition.y = bottom + halfHeight;
+        pos.y = bottom + halfHeight;
     }
 
     public void setWidth(float width) {
@@ -92,8 +94,8 @@ public class Rect {
         this.halfHeight = height / 2f;
     }
 
-    public boolean isMe(Vector2 touchPoint) {
-        return touchPoint.x >= getLeft() && touchPoint.x <= getRight() && touchPoint.y >= getBottom() && touchPoint.y <= getTop();
+    public boolean isMe(Vector2 touch) {
+        return touch.x >= getLeft() && touch.x <= getRight() && touch.y >= getBottom() && touch.y <= getTop();
     }
 
     public boolean isOutside(Rect other) {
@@ -102,6 +104,6 @@ public class Rect {
 
     @Override
     public String toString() {
-        return "Rectangle: pos" + centerPosition + " size(" + getWidth() + ", " + getHeight() + ")";
+        return "Rectangle: pos" + pos + " size(" + getWidth() + ", " + getHeight() + ")";
     }
 }
