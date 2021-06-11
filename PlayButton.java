@@ -2,8 +2,6 @@ package ru.alexander_kramarenko.sprite;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
 
 import ru.alexander_kramarenko.base.ScaledButton;
 import ru.alexander_kramarenko.math.Rect;
