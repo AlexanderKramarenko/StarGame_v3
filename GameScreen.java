@@ -20,6 +20,7 @@ import ru.alexander_kramarenko.sprite.Bullet;
 import ru.alexander_kramarenko.sprite.EnemyShip;
 import ru.alexander_kramarenko.sprite.GameOver;
 import ru.alexander_kramarenko.sprite.MainShip;
+import ru.alexander_kramarenko.sprite.NewGame;
 import ru.alexander_kramarenko.sprite.Star;
 import ru.alexander_kramarenko.utils.EnemyEmitter;
 
@@ -49,6 +50,17 @@ public class GameScreen extends BaseScreen {
     private EnemyEmitter enemyEmitter;
     private State state;
 
+    private NewGame newGame;
+
+    // Параметры пульсации
+    private static final float SCALE_STEP = 0.0001f;
+    private static final float MAX_SCALE = 0.06f;
+    private static final float MIN_SCALE = 0.059f;
+    private boolean decreaseSprite = false;
+    private boolean increaseSprite = true;
+    private float effectiveScale = MAX_SCALE;
+
+
     @Override
     public void show() {
         super.show();
@@ -60,6 +72,7 @@ public class GameScreen extends BaseScreen {
             stars[i] = new Star(atlas);
         }
         gameOver = new GameOver(atlas);
+        newGame = new NewGame(atlas, this);
         bulletPool = new BulletPool();
         explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
         explosionPool = new ExplosionPool(atlas, explosionSound);
@@ -72,6 +85,15 @@ public class GameScreen extends BaseScreen {
         music.setLooping(true);
         music.play();
         state = State.PLAYING;
+    }
+
+    public void startNewGame() {
+
+        state = State.PLAYING;
+        mainShip.resetMainShip();
+        bulletPool.freeAllGameObjects();
+        enemyPool.freeAllGameObjects();
+        explosionPool.freeAllGameObjects();
     }
 
     @Override
@@ -91,6 +113,7 @@ public class GameScreen extends BaseScreen {
         }
         mainShip.resize(worldBounds);
         gameOver.resize(worldBounds);
+        newGame.resize(worldBounds);
     }
 
     @Override
@@ -127,6 +150,8 @@ public class GameScreen extends BaseScreen {
     public boolean touchDown(Vector2 touch, int pointer, int button) {
         if (state == State.PLAYING) {
             mainShip.touchDown(touch, pointer, button);
+        } else if (state == State.GAME_OVER) {
+            newGame.touchDown(touch, pointer, button);
         }
         return false;
     }
@@ -135,6 +160,9 @@ public class GameScreen extends BaseScreen {
     public boolean touchUp(Vector2 touch, int pointer, int button) {
         if (state == State.PLAYING) {
             mainShip.touchUp(touch, pointer, button);
+        } else if (state == State.GAME_OVER) {
+            newGame.touchUp(touch, pointer, button);
+
         }
         return false;
     }
@@ -198,6 +226,24 @@ public class GameScreen extends BaseScreen {
         explosionPool.freeAllDestroyed();
     }
 
+    private void pulsateStartNewGameSprite() {
+        if (decreaseSprite) {
+            effectiveScale -= SCALE_STEP;
+            System.out.println("effectivescale = " + effectiveScale);
+
+        } else if (increaseSprite) {
+            effectiveScale += SCALE_STEP;
+            System.out.println("effectivescale = " + effectiveScale);
+        }
+        if (effectiveScale > MAX_SCALE) {
+            increaseSprite = false;
+            decreaseSprite = true;
+        } else if (effectiveScale < MIN_SCALE) {
+            increaseSprite = true;
+            decreaseSprite = false;
+        }
+    }
+
     private void draw() {
         ScreenUtils.clear(0.33f, 0.45f, 0.68f, 1);
         batch.begin();
@@ -211,6 +257,11 @@ public class GameScreen extends BaseScreen {
             enemyPool.drawActiveSprites(batch);
         } else {
             gameOver.draw(batch);
+            // Условия пульсации
+            pulsateStartNewGameSprite();
+
+            newGame.setHeightProportion(effectiveScale);
+            newGame.draw(batch);
         }
         explosionPool.drawActiveSprites(batch);
         batch.end();

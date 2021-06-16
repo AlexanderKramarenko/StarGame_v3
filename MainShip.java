@@ -37,7 +37,19 @@ public class MainShip extends Ship {
         reloadInterval = RELOAD_INTERVAL;
         bulletHeight = 0.01f;
         damage = 1;
-        hp = 100;
+        hp = 1;
+    }
+
+    public void resetMainShip() {
+        hp = 1;
+        leftPointer = INVALID_POINTER;
+        rightPointer = INVALID_POINTER;
+        pressedLeft = false;
+        pressedRight = false;
+
+        stop();
+        pos.x = worldBounds.pos.x;
+        flushDestroy();
     }
 
     @Override
